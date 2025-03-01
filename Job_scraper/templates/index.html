@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Scraper</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; margin: 20px; }
+        input, button { padding: 10px; margin: 5px; }
+        .job-list { margin-top: 20px; text-align: left; display: inline-block; }
+        .job-card { padding: 10px; border: 1px solid #ccc; margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Job Scraper</h1>
+    <label for="role">Job Title:</label>
+    <input type="text" id="role" placeholder="Software Engineer">
+    
+    <label for="location">Location:</label>
+    <input type="text" id="location" placeholder="New York">
+
+    <button onclick="fetchJobs()">Search Jobs</button>
+
+    <div class="job-list" id="jobList"></div>
+
+    <script>
+        async function fetchJobs() {
+            const role = document.getElementById("role").value;
+            const location = document.getElementById("location").value;
+            const response = await fetch(`/jobs?role=${role}&location=${location}`);
+            const jobs = await response.json();
+
+            const jobList = document.getElementById("jobList");
+            jobList.innerHTML = "";
+
+            if (jobs.length === 0) {
+                jobList.innerHTML = "<p>No jobs found.</p>";
+                return;
+            }
+
+            jobs.forEach(job => {
+                const jobCard = document.createElement("div");
+                jobCard.classList.add("job-card");
+                jobCard.innerHTML = `<strong>${job.title}</strong><br>${job.company}<br>${job.location}`;
+                jobList.appendChild(jobCard);
+            });
+        }
+    </script>
+</body>
+</html>
